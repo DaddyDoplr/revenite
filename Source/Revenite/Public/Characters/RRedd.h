@@ -30,11 +30,26 @@ protected:
 	virtual void BeginPlay() override;
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Components")
-		USpringArmComponent* CameraBoomArm;
+	USpringArmComponent* CameraBoomArm;
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components")
-		UCameraComponent* CameraComp;
+	UCameraComponent* CameraComp;
 
 	void MoveForward(float Amount);
 	void MoveRight(float Amount);
+
+	class ARInteractableActor* GetInteractableInView();
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Gameplay")
+	float InteractRadius;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Gameplay")
+	float MaxInteractDistance;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Gameplay")
+	bool bDebugInteractable;
+
+	bool bHasNewFocus;
+
+	class ARInteractableActor* FocusedInteractableActor;
 };
