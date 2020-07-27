@@ -3,6 +3,7 @@
 
 #include "RGameInstance.h"
 #include "Runtime/MoviePlayer/Public/MoviePlayer.h"
+#include "SLoadingScreenWidget.h"
 
 void URGameInstance::Init()
 {
@@ -10,22 +11,29 @@ void URGameInstance::Init()
 
 	FCoreUObjectDelegates::PreLoadMap.AddUObject(this, &URGameInstance::BeginLoadingScreen);
 	FCoreUObjectDelegates::PostLoadMapWithWorld.AddUObject(this, &URGameInstance::EndLoadingScreen);
+
 }
 
 void URGameInstance::BeginLoadingScreen(const FString& MapName)
 {
-	if (!IsRunningDedicatedServer())
+	
+
+	if (IsMoviePlayerEnabled() && !GetMoviePlayer()->IsStartupMoviePlaying())
 	{
+		const TCHAR* bruh = *LevelsData[MapName].LoadingScreenImages[0].GetAssetPathName().ToString();
+
+		LoadObject<UObject>(NULL, bruh);
+
 		FLoadingScreenAttributes LoadingScreen;
 
 		LoadingScreen.bAutoCompleteWhenLoadingCompletes = true;
-		//TSharedPtr<class SWidget> LoadingScreenWidget = SNew(SLoadingScreenWidget);
-		//SAssignNew(LoadingScreenWidget, SLoadingScreenWidget).MapName(MapName);
-		//SAssignNew(LoadingScreenWidget, SLoadingScreenWidget).BackgroundImg(LoadingScreenImages[0]);
+		TSharedPtr<class SWidget> LoadingScreenWidget = SNew(SLoadingScreenWidget)
+			.MapDisplayName(LevelsData[MapName].DisplayName)
+			.BackgroundImg(LevelsData[MapName].LoadingScreenImages[0]);
+
 		//FMath::Rand() % (LoadingScreenImages.Num() - 1)
 
-		//LoadingScreen.WidgetLoadingScreen = LoadingScreenWidget;
-		LoadingScreen.WidgetLoadingScreen = FLoadingScreenAttributes::NewTestLoadingScreenWidget();
+		LoadingScreen.WidgetLoadingScreen = LoadingScreenWidget;
 
 		GetMoviePlayer()->SetupLoadingScreen(LoadingScreen);
 	}

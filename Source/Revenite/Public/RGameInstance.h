@@ -4,11 +4,25 @@
 
 #include "CoreMinimal.h"
 #include "Engine/GameInstance.h"
+#include "Engine/DataTable.h"
 #include "RGameInstance.generated.h"
 
 /**
  * 
  */
+
+USTRUCT(BlueprintType)
+struct FLevelData
+{
+	GENERATED_BODY()
+public:
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	FText DisplayName;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (AllowedClasses = "Texture2D"))
+	TArray<FSoftObjectPath> LoadingScreenImages;
+};
+
 UCLASS()
 class REVENITE_API URGameInstance : public UGameInstance
 {
@@ -18,16 +32,11 @@ public:
 	virtual void Init() override;
 
 	UFUNCTION()
-		virtual void BeginLoadingScreen(const FString& MapName);
+	virtual void BeginLoadingScreen(const FString& MapName);
 	UFUNCTION()
-		virtual void EndLoadingScreen(UWorld* InLoadedWorld);
+	virtual void EndLoadingScreen(UWorld* InLoadedWorld);
 
 protected:
-
-	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Loading screen")
-		TArray<FString> MoviePaths;
-
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Images, meta = (AllowedClasses = "Texture2D"))
-		TArray<FSoftObjectPath> LoadingScreenImages;
-	
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Loading Screen")
+	TMap<FString, FLevelData> LevelsData;
 };
