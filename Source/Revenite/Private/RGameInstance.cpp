@@ -20,7 +20,9 @@ void URGameInstance::BeginLoadingScreen(const FString& MapName)
 
 	if (IsMoviePlayerEnabled() && !GetMoviePlayer()->IsStartupMoviePlaying())
 	{
-		const TCHAR* bruh = *LevelsData[MapName].LoadingScreenImages[0].GetAssetPathName().ToString();
+		int i = FMath::RandRange(0, LevelsData[MapName].LoadingScreenImages.Num() - 1);
+
+		const TCHAR* bruh = *LevelsData[MapName].LoadingScreenImages[i].GetAssetPathName().ToString();
 
 		LoadObject<UObject>(NULL, bruh);
 
@@ -29,9 +31,9 @@ void URGameInstance::BeginLoadingScreen(const FString& MapName)
 		LoadingScreen.bAutoCompleteWhenLoadingCompletes = true;
 		TSharedPtr<class SWidget> LoadingScreenWidget = SNew(SLoadingScreenWidget)
 			.MapDisplayName(LevelsData[MapName].DisplayName)
-			.BackgroundImg(LevelsData[MapName].LoadingScreenImages[0]);
+			.BackgroundImg(LevelsData[MapName].LoadingScreenImages[i]);
 
-		//FMath::Rand() % (LoadingScreenImages.Num() - 1)
+		
 
 		LoadingScreen.WidgetLoadingScreen = LoadingScreenWidget;
 
